@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidatin;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -13,10 +14,6 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         private IProductDal _productDal;
-        public ProductManager()
-        {
-
-        }
         public ProductManager(IProductDal productDal)
         {
             _productDal = productDal;
@@ -26,25 +23,32 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
         }
+
         public IDataResult<List<Product>> GetList()
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetList().ToList());
         }
+
+        [CacheAspect(duration: 5)]
         public IDataResult<List<Product>> GetListByCategory(int categoryId)
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetList(p => p.CategoryId == categoryId).ToList());
         }
+
         [ValidationAspect(typeof(ProductValidator), Priority = 1)]
+        [CacherRomoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
+
         public IResult Delete(Product product)
         {
             _productDal.Delete(product);
             return new SuccessResult(Messages.ProductDeleted);
         }
+
         public IResult Update(Product product)
         {
             _productDal.Update(product);

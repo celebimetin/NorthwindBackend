@@ -17,6 +17,7 @@ namespace Business.Concrete
             _userService = userService;
             _TokenHelper = tokenHelper;
         }
+
         public IDataResult<AccessToken> CreateAccessToken(User user)
         {
             var claims = _userService.GetClaims(user);

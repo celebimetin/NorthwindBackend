@@ -12,6 +12,7 @@ namespace Business.Concrete
         {
             _userDal = userDal;
         }
+
         public void Add(User user)
         {
             _userDal.Add(user);

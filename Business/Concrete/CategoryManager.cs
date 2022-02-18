@@ -14,6 +14,7 @@ namespace Business.Concrete
         {
             _categoryDal = categoryDal;
         }
+
         public IDataResult<Category> GetById(int categoryId)
         {
             return new SuccessDataResult<Category>(_categoryDal.Get(x => x.CategoryId == categoryId));
